@@ -15,7 +15,7 @@
 SoftwareSerial bluetooth(RXD, TXD); // Create a SoftwareSerial object for Bluetooth communication
 
 // Motor speed (0-255)
-#define MOTOR_SPEED 150
+#define MOTOR_SPEED 200
 
 void setup() {
   // Set motor control pins as output
