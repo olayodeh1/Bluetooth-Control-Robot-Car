@@ -1,0 +1,108 @@
+#include <SoftwareSerial.h> // Include the SoftwareSerial library for Bluetooth communication
+
+// Define pins for motor driver
+#define IN1 4  // Motor A input 1
+#define IN2 5  // Motor A input 2
+#define IN3 6  // Motor B input 1
+#define IN4 7  // Motor B input 2
+#define ENA 9  // Enable pin for Motor A (PWM)
+#define ENB 10 // Enable pin for Motor B (PWM)
+
+// Define pins for HC-05 Bluetooth module
+#define TXD 10 // TXD pin of HC-05
+#define RXD 11 // RXD pin of HC-05
+
+SoftwareSerial bluetooth(RXD, TXD); // Create a SoftwareSerial object for Bluetooth communication
+
+// Motor speed (0-255)
+#define MOTOR_SPEED 150
+
+void setup() {
+  // Set motor control pins as output
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  // Initialize serial communication for debugging
+  Serial.begin(9600);
+  bluetooth.begin(9600); // Initialize Bluetooth communication at 9600 baud rate
+}
+
+void loop() {
+  if (bluetooth.available()) { // Check if data is available from Bluetooth
+    char command = bluetooth.read(); // Read the command from Bluetooth
+    Serial.println(command); // Print the command to serial monitor for debugging
+
+    // Control the car based on the received command
+    switch (command) {
+      case 'F': // Move forward
+        moveForward();
+        break;
+      case 'B': // Move backward
+        moveBackward();
+        break;
+      case 'L': // Turn left
+        turnLeft();
+        break;
+      case 'R': // Turn right
+        turnRight();
+        break;
+      case 'S': // Stop
+        stopCar();
+        break;
+    }
+  }
+}
+
+// Function to move the car forward
+void moveForward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  analogWrite(ENA, MOTOR_SPEED); // Set speed for Motor A
+  analogWrite(ENB, MOTOR_SPEED); // Set speed for Motor B
+}
+
+// Function to move the car backward
+void moveBackward() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+  analogWrite(ENA, MOTOR_SPEED); // Set speed for Motor A
+  analogWrite(ENB, MOTOR_SPEED); // Set speed for Motor B
+}
+
+// Function to turn the car left
+void turnLeft() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  analogWrite(ENA, MOTOR_SPEED); // Set speed for Motor A
+  analogWrite(ENB, MOTOR_SPEED); // Set speed for Motor B
+}
+
+// Function to turn the car right
+void turnRight() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+  analogWrite(ENA, MOTOR_SPEED); // Set speed for Motor A
+  analogWrite(ENB, MOTOR_SPEED); // Set speed for Motor B
+}
+
+// Function to stop the car
+void stopCar() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+  analogWrite(ENA, 0); // Stop Motor A
+  analogWrite(ENB, 0); // Stop Motor B
+}
